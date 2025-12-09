@@ -5,9 +5,13 @@ import { Queue } from 'bullmq';
 import { OpenAIEmbeddings } from '@langchain/openai';
 import { QdrantVectorStore } from '@langchain/qdrant';
 import OpenAI from 'openai';
+import dotenv from 'dotenv';
+
+// Load environment variables from ./env/.env (server/env/.env)
+dotenv.config({ path: './env/.env' });
 
 const client = new OpenAI({
-  apiKey: '',
+  apiKey: process.env.OPENAI_API_KEY,
 });
 const queue = new Queue('file-upload-queue', {
   connection: {
@@ -52,7 +56,7 @@ app.get('/chat', async (req, res) => {
 
   const embeddings = new OpenAIEmbeddings({
     model: 'text-embedding-3-small',
-    apiKey: '',
+    apiKey: process.env.OPENAI_API_KEY,
   });
   const vectorStore = await QdrantVectorStore.fromExistingCollection(
     embeddings,
